@@ -3,7 +3,55 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31729.503
 MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConfigurationManager", "ConfigurationManager\ConfigurationManager.csproj", "{5B5975E3-FA56-4D20-B810-659DDFB19403}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSURandomGenerator", "DSURandomGenerator\DSURandomGenerator.csproj", "{F50A05CD-295F-4E91-8AFA-D1D3C1502DA7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DSUTimeGenerator", "DSUTimeGenerator\DSUTimeGenerator.csproj", "{C53349A2-669B-4F9A-91D9-5E2D9DD1170C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DPUAddNumbers", "DPUAddNumbers\DPUAddNumbers.csproj", "{227DEFAE-AC62-4DC4-B7C1-921A456FBD14}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DPUMultiplyNumbers", "DPUMultiplyNumbers\DPUMultiplyNumbers.csproj", "{1EF48AB4-08CB-4A70-9798-9FA6A1CE261D}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DVUSumOfDigits", "DVUSumOfDigits\DVUSumOfDigits.csproj", "{BE8925C1-1008-4456-88B5-65CC37B728DD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DVUShowNumber", "DVUShowNumber\DVUShowNumber.csproj", "{9B5EB779-386E-46FD-9640-8F75DB1EF5A1}"
+EndProject
 Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{5B5975E3-FA56-4D20-B810-659DDFB19403}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5B5975E3-FA56-4D20-B810-659DDFB19403}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5B5975E3-FA56-4D20-B810-659DDFB19403}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5B5975E3-FA56-4D20-B810-659DDFB19403}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F50A05CD-295F-4E91-8AFA-D1D3C1502DA7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F50A05CD-295F-4E91-8AFA-D1D3C1502DA7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F50A05CD-295F-4E91-8AFA-D1D3C1502DA7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F50A05CD-295F-4E91-8AFA-D1D3C1502DA7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C53349A2-669B-4F9A-91D9-5E2D9DD1170C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C53349A2-669B-4F9A-91D9-5E2D9DD1170C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C53349A2-669B-4F9A-91D9-5E2D9DD1170C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C53349A2-669B-4F9A-91D9-5E2D9DD1170C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{227DEFAE-AC62-4DC4-B7C1-921A456FBD14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{227DEFAE-AC62-4DC4-B7C1-921A456FBD14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{227DEFAE-AC62-4DC4-B7C1-921A456FBD14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{227DEFAE-AC62-4DC4-B7C1-921A456FBD14}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1EF48AB4-08CB-4A70-9798-9FA6A1CE261D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1EF48AB4-08CB-4A70-9798-9FA6A1CE261D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1EF48AB4-08CB-4A70-9798-9FA6A1CE261D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1EF48AB4-08CB-4A70-9798-9FA6A1CE261D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{BE8925C1-1008-4456-88B5-65CC37B728DD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{BE8925C1-1008-4456-88B5-65CC37B728DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{BE8925C1-1008-4456-88B5-65CC37B728DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{BE8925C1-1008-4456-88B5-65CC37B728DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9B5EB779-386E-46FD-9640-8F75DB1EF5A1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9B5EB779-386E-46FD-9640-8F75DB1EF5A1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9B5EB779-386E-46FD-9640-8F75DB1EF5A1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9B5EB779-386E-46FD-9640-8F75DB1EF5A1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
