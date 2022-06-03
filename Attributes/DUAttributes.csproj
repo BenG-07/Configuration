@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{F50A05CD-295F-4E91-8AFA-D1D3C1502DA7}</ProjectGuid>
+    <ProjectGuid>{41B3EBFC-792D-4B5C-A0A3-C3DB9559EC12}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DSURandomGenerator</RootNamespace>
-    <AssemblyName>DSURandomGenerator</AssemblyName>
+    <RootNamespace>DUAttributes</RootNamespace>
+    <AssemblyName>DUAttributes</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <Deterministic>true</Deterministic>
@@ -17,7 +17,7 @@
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
-    <OutputPath>..\ConfigurationManager\bin\Debug\Extensions\DSU\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
@@ -41,19 +41,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="GeneratorThreadArguments.cs" />
-    <Compile Include="RandomGenerator.cs" />
+    <Compile Include="DataSourceAttribute.cs" />
+    <Compile Include="DataUnitAttribute.cs" />
+    <Compile Include="DataUnitType\DataUnitType.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\DUAttributes\DUAttributes.csproj">
-      <Project>{b1e2adb3-3733-46df-a663-b710d9077718}</Project>
-      <Name>DUAttributes</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\DUEvents\DUEvents.csproj">
-      <Project>{b3545be2-c1d2-413a-aa26-2789ff155fa7}</Project>
-      <Name>DUEvents</Name>
-    </ProjectReference>
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

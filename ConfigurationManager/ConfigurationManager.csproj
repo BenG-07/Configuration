@@ -43,11 +43,23 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ConfigurationManager.cs" />
+    <Compile Include="DataUnitComparison\DataUnitTypeComparer.cs" />
+    <Compile Include="DataUnitComparison\IsDataProcessingUnit.cs" />
+    <Compile Include="DataUnitComparison\IsDataSourceUnit.cs" />
+    <Compile Include="DataUnitComparison\IsDataUnit.cs" />
+    <Compile Include="DataUnitComparison\IsDataVisualizationeUnit.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DUAttributes\DUAttributes.csproj">
+      <Project>{b1e2adb3-3733-46df-a663-b710d9077718}</Project>
+      <Name>DUAttributes</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

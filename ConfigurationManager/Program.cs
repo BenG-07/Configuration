@@ -10,6 +10,7 @@ namespace ConfigurationManager
     {
         static void Main(string[] args)
         {
+            new ConfigurationManager();
         }
     }
 }
