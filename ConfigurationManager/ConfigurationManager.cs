@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using ConfigurationManager.DataUnitComparison;
 using DUEvents;
 using System.IO;
+using System.Threading;
 
 namespace ConfigurationManager
 {
@@ -18,15 +19,22 @@ namespace ConfigurationManager
 
         private Dictionary<string, Type> DUs = new Dictionary<string, Type>();
 
+        private List<DUInformation> DUInformation;
+
         public ConfigurationManager()
         {
-            this.GetAllAvailableExtensions();
+            foreach (var item in this.DUInformation = this.GetAllAvailableExtensions().ToList())
+            {
+                DUs.Add(item.Type.FullName, item.Attribute.OutputDataType);
+            }
+
+            DUInformation.ForEach(x => Console.WriteLine($"{x.Attribute}\n"));
 
             // Get extension
             var assembly = Assembly.LoadFrom(@"Extensions\DSU\DSURandomGenerator.dll");
 
             // Get the class with the DataUnit Attribute and the DataSourceUnit as Type
-            Type type = this.GetDUInformation(assembly, new DataSourceUnit()).First().Type;
+            Type type = this.GetDUInformation(assembly).Where(info => (info.Attribute).DataUnit.Accept(new DataUnitTypeComparer(new DataSourceUnit()))).First().Type;
 
             // Get the DataSourceAttribute
             MemberInfo m = this.GetDUDataEmitter(type, typeof(DataSourceAttribute));
@@ -43,9 +51,6 @@ namespace ConfigurationManager
             // Get the handler
             Delegate handler = Delegate.CreateDelegate(eventInfo.EventHandlerType, this, this.GetType().GetMethod("DSUCallback"));
 
-            // After finding all necessary parts => add them to the dictionary with the output type
-            DUs.Add(type.FullName, ((DataUnitInfoAttribute)type.GetCustomAttribute(typeof(DataUnitInfoAttribute))).OutputDataType);
-
             // Subscribe to the EmittingEvent (the handler(Callbakc)) 
             eventInfo.AddEventHandler(DSU, handler);
 
@@ -55,13 +60,13 @@ namespace ConfigurationManager
             Console.ReadLine();
         }
 
-        private IEnumerable<DUInformation> GetDUInformation(Assembly assembly, DataUnit targetUnit)
+        private IEnumerable<DUInformation> GetDUInformation(Assembly assembly)
         {
             foreach (var type in assembly.GetTypes())
             {
                 foreach (var attribute in type.GetCustomAttributes())
                 {
-                    if (attribute.GetType() == typeof(DataUnitInfoAttribute) && ((DataUnitInfoAttribute)attribute).DataUnit.Accept(new DataUnitTypeComparer(targetUnit)))
+                    if (attribute.GetType() == typeof(DataUnitInfoAttribute))
                     {
                         yield return new DUInformation(type, (DataUnitInfoAttribute)attribute);
                     }
@@ -87,7 +92,7 @@ namespace ConfigurationManager
             throw new Exception($"No Event with Attribute {nameof(targetAttributeType)} found!");
         }
 
-        public void DSUCallback(object sender, EventArgs e)
+        public void DSUCallback(object sender, dynamic e)
         {
             Type targetType;
             if (!this.DUs.TryGetValue(sender.ToString(), out targetType))
@@ -95,45 +100,38 @@ namespace ConfigurationManager
                 throw new Exception($"Unknown Callback from {sender.ToString()} class.");
             }
 
-            var temp = this.GetType().GetMethods(BindingFlags.NonPublic | BindingFlags.Instance);
-
             var method = this.GetType().GetMethod("ProcessData", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(targetType);
             method.Invoke(this, new object[] { e });
         }
 
-        private void ProcessData<T>(EventArgs e)
+        private void ProcessData<T>(dynamic e)
         {
             NewValueAvailableEventArgs<T> args = (NewValueAvailableEventArgs<T>)e;
             Console.WriteLine(args.Value);
         }
 
-        private DataUnitInfoAttribute[] GetAllAvailableExtensions()
+        private IEnumerable<DUInformation> GetAllAvailableExtensions()
         {
-            List<DataUnitInfoAttribute> dataUnitInfoAttributes = new List<DataUnitInfoAttribute>();
-
             foreach (var path in ExtensionPaths)
             {
                 foreach (var libarary in Directory.GetFiles(path, "*.dll"))
                 {
-                    var assembly = Assembly.LoadFrom(libarary);
-                    foreach (var item in this.GetDUInformation(assembly, new DataSourceUnit()))
+                    foreach (var item in this.GetDUInformation(Assembly.LoadFrom(libarary)))
                     {
-                        Console.WriteLine(item.Attribute);
-                        Console.WriteLine();
-                    }
-                    foreach (var item in this.GetDUInformation(assembly, new DataProcessingUnit()))
-                    {
-                        Console.WriteLine(item.Attribute);
+                        yield return item;
                     }
                 }
 
                 foreach (var executable in Directory.GetFiles(path, "*.exe"))
                 {
-
+                    foreach (var item in this.GetDUInformation(Assembly.LoadFrom(executable)))
+                    {
+                        yield return item;
+                    }
                 }
             }
 
-            return dataUnitInfoAttributes.ToArray();
+            yield break;
         }
     }
 }

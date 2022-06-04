@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using DUAttributes;
 using DUAttributes.DataUnitType;
-using DUEvents;
 
 namespace DSURandomGenerator
 {
@@ -23,7 +23,7 @@ namespace DSURandomGenerator
 
         private GeneratorThreadArguments generatorThreadArguments;
 
-        public delegate void NewValueAvailableEventHandler(object sender, NewValueAvailableEventArgs<int> e);
+        public delegate void NewValueAvailableEventHandler(object sender, dynamic e);
 
         [DataSource]
         public event NewValueAvailableEventHandler NewValueAvailable;
@@ -74,7 +74,12 @@ namespace DSURandomGenerator
 
         private void FireNewNumberAvailable(int number)
         {
-            this.NewValueAvailable?.Invoke(this, new NewValueAvailableEventArgs<int>(number));
+            var assembly = Assembly.LoadFrom(@"DUEvents.dll");
+            var eventType = assembly.GetType("DUEvents.NewValueAvailableEventArgs`1").MakeGenericType(typeof(int));
+            var constructor = eventType.GetConstructor(new Type[] { typeof(int) });
+            var eventArgs = constructor.Invoke(new object[] { number });
+
+            this.NewValueAvailable?.Invoke(this, eventArgs);
         }
     }
 }
