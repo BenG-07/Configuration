@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
 using DUAttributes;
-using DUEvents;
 
 namespace DPUAddNumbers
 {
@@ -23,14 +23,19 @@ namespace DPUAddNumbers
 
         private int sum;
 
-        public delegate void NewValueAvailableEventHandler(object sender, NewValueAvailableEventArgs<int> e);
+        public delegate void NewValueAvailableEventHandler(object sender, dynamic e);
 
         [DataSource]
         public event NewValueAvailableEventHandler NewValueAvailable;
 
         private void FireNewNumberAvailable(int number)
         {
-            this.NewValueAvailable?.Invoke(this, new NewValueAvailableEventArgs<int>(number));
+            var assembly = Assembly.LoadFrom(@"DUEvents.dll");
+            var eventType = assembly.GetType("DUEvents.NewValueAvailableEventArgs`1").MakeGenericType(typeof(int));
+            var constructor = eventType.GetConstructor(new Type[] { typeof(int) });
+            var eventArgs = constructor.Invoke(new object[] { number });
+
+            this.NewValueAvailable?.Invoke(this, eventArgs);
         }
 
         [DataDestination]

@@ -17,45 +17,48 @@ namespace ConfigurationManager
     {
         private readonly string[] ExtensionPaths = { @"Extensions\DSU", @"Extensions\DPU", @"Extensions\DVU" };
 
-        private Dictionary<string, Type> DUs = new Dictionary<string, Type>();
-
-        private List<DUInformation> DUInformation;
+        private Dictionary<string, DUInformation> DUInformation = new Dictionary<string, DUInformation>();
 
         public ConfigurationManager()
         {
-            foreach (var item in this.DUInformation = this.GetAllAvailableExtensions().ToList())
+            foreach (var item in this.GetAllAvailableExtensions().ToList())
             {
-                DUs.Add(item.Type.FullName, item.Attribute.OutputDataType);
+                this.DUInformation.Add(item.Type.FullName, item);
             }
 
-            DUInformation.ForEach(x => Console.WriteLine($"{x.Attribute}\n"));
+            DUInformation.ToList().ForEach(x => Console.WriteLine($"{x.Value.Attribute}\n"));
 
             // Get extension
-            var assembly = Assembly.LoadFrom(@"Extensions\DSU\DSURandomGenerator.dll");
+            var assembly = Assembly.LoadFrom($"{this.ExtensionPaths[0]}\\DSURandomGenerator.dll");
+            var assembly2 = Assembly.LoadFrom($"{this.ExtensionPaths[1]}\\DPUAddNumbers.dll");
 
             // Get the class with the DataUnit Attribute and the DataSourceUnit as Type
-            Type type = this.GetDUInformation(assembly).Where(info => (info.Attribute).DataUnit.Accept(new DataUnitTypeComparer(new DataSourceUnit()))).First().Type;
+            Type type = this.DUInformation["DSURandomGenerator.RandomGenerator"].Type;
+            Type type2 = this.DUInformation["DPUAddNumbers.AddNumbers"].Type;
 
             // Get the DataSourceAttribute
-            MemberInfo m = this.GetDUDataEmitter(type, typeof(DataSourceAttribute));
+            this.DUInformation["DSURandomGenerator.RandomGenerator"].DataSource = (EventInfo)this.GetDUByAttribute(type, typeof(DataSourceAttribute));
+            this.DUInformation["DPUAddNumbers.AddNumbers"].DataSource = (EventInfo)this.GetDUByAttribute(type2, typeof(DataSourceAttribute));
+            this.DUInformation["DPUAddNumbers.AddNumbers"].callBack = (MethodInfo)this.GetDUByAttribute(type2, typeof(DataDestinationAttribute));
 
             // Create instance of the DSU
-            object DSU = Activator.CreateInstance(type);
-            
-            // Get the start method for the DSU
-            var startMethod = type.GetMethod("Start");
+            this.DUInformation["DSURandomGenerator.RandomGenerator"].Instance = Activator.CreateInstance(type);
+            this.DUInformation["DPUAddNumbers.AddNumbers"].Instance = Activator.CreateInstance(type2);
 
-            // Get the Emitter of the values
-            var eventInfo = (EventInfo)m;
+            // Get the start method for the DSU
+            this.DUInformation["DSURandomGenerator.RandomGenerator"].Start = type.GetMethod("Start");
+            this.DUInformation["DSURandomGenerator.RandomGenerator"].Stop = type.GetMethod("Stop");
 
             // Get the handler
-            Delegate handler = Delegate.CreateDelegate(eventInfo.EventHandlerType, this, this.GetType().GetMethod("DSUCallback"));
+            Delegate handler = Delegate.CreateDelegate(this.DUInformation["DSURandomGenerator.RandomGenerator"].DataSource.EventHandlerType, this, this.GetType().GetMethod("DSUCallback"));
+            Delegate handler2 = Delegate.CreateDelegate(this.DUInformation["DPUAddNumbers.AddNumbers"].DataSource.EventHandlerType, this, this.GetType().GetMethod("DSUCallback"));
 
             // Subscribe to the EmittingEvent (the handler(Callbakc)) 
-            eventInfo.AddEventHandler(DSU, handler);
+            this.DUInformation["DSURandomGenerator.RandomGenerator"].DataSource.AddEventHandler(this.DUInformation["DSURandomGenerator.RandomGenerator"].Instance, handler);
+            this.DUInformation["DPUAddNumbers.AddNumbers"].DataSource.AddEventHandler(this.DUInformation["DPUAddNumbers.AddNumbers"].Instance, handler2);
 
             // Start the DSU
-            startMethod.Invoke(DSU, new object[] { });
+            this.DUInformation["DSURandomGenerator.RandomGenerator"].Start.Invoke(this.DUInformation["DSURandomGenerator.RandomGenerator"].Instance, new object[] { });
 
             Console.ReadLine();
         }
@@ -76,7 +79,7 @@ namespace ConfigurationManager
             yield break;
         }
 
-        private MemberInfo GetDUDataEmitter(Type type, Type targetAttributeType)
+        private MemberInfo GetDUByAttribute(Type type, Type targetAttributeType)
         {
             foreach (var member in type.GetMembers())
             {
@@ -94,12 +97,13 @@ namespace ConfigurationManager
 
         public void DSUCallback(object sender, dynamic e)
         {
-            Type targetType;
-            if (!this.DUs.TryGetValue(sender.ToString(), out targetType))
+            DUInformation dUInformation = null;
+            if (!this.DUInformation.TryGetValue(sender.ToString(), out dUInformation))
             {
                 throw new Exception($"Unknown Callback from {sender.ToString()} class.");
             }
 
+            Type targetType = dUInformation.Attribute.OutputDataType;
             var method = this.GetType().GetMethod("ProcessData", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(targetType);
             method.Invoke(this, new object[] { e });
         }
@@ -107,7 +111,9 @@ namespace ConfigurationManager
         private void ProcessData<T>(dynamic e)
         {
             NewValueAvailableEventArgs<T> args = (NewValueAvailableEventArgs<T>)e;
+
             Console.WriteLine(args.Value);
+            this.DUInformation["DPUAddNumbers.AddNumbers"].callBack.Invoke(this.DUInformation["DPUAddNumbers.AddNumbers"].Instance, new object[] { args.Value });
         }
 
         private IEnumerable<DUInformation> GetAllAvailableExtensions()

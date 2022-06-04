@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace DUAttributes
 {
+    [AttributeUsage(AttributeTargets.Method)]
     public class DataDestinationAttribute : Attribute
     {
     }
