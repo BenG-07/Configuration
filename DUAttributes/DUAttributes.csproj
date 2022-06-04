@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DataDestinationAttribute.cs" />
     <Compile Include="DataSourceAttribute.cs" />
     <Compile Include="DataUnitEnum.cs" />
     <Compile Include="DataUnitInfoAttribute.cs" />

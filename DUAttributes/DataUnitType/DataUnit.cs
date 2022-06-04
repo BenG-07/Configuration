@@ -11,5 +11,7 @@ namespace DUAttributes.DataUnitType
         public abstract void Accept(IDataUnitVisitor visitor);
 
         public abstract T Accept<T>(IDataUnitVisitor<T> visitor);
+
+        public override string ToString() => this.GetType().Name;
     }
 }

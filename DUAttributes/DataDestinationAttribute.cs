@@ -4,10 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DUAttributes.DataUnitType
+namespace DUAttributes
 {
-    public abstract class DataUnitType
+    public class DataDestinationAttribute : Attribute
     {
-
     }
 }

@@ -44,5 +44,15 @@
     <Compile Include="TimeGenerator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DUAttributes\DUAttributes.csproj">
+      <Project>{b1e2adb3-3733-46df-a663-b710d9077718}</Project>
+      <Name>DUAttributes</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DUEvents\DUEvents.csproj">
+      <Project>{b3545be2-c1d2-413a-aa26-2789ff155fa7}</Project>
+      <Name>DUEvents</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -51,5 +51,16 @@ namespace DUAttributes
             this.OutputDataType = outputDataType;
             this.OutputDataDescription = outputDataDescription;
         }
+
+        public override string ToString()
+        {
+            string info = $"{nameof(this.Name)}: {this.Name}" +
+                $"\n{nameof(this.Description)}: {this.Description}" +
+                $"\n{nameof(this.InputDataType)}: {this.InputDataType}" +
+                $"\n{nameof(this.InputDataDescription)}: {this.InputDataDescription}" +
+                $"\n{nameof(this.OutputDataType)}: {this.OutputDataType}" +
+                $"\n{nameof(this.OutputDataDescription)}: {this.OutputDataDescription}";
+            return info;
+        }
     }
 }

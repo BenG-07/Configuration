@@ -49,6 +49,7 @@
     <Compile Include="DataUnitComparison\IsDataSourceUnit.cs" />
     <Compile Include="DataUnitComparison\IsDataUnit.cs" />
     <Compile Include="DataUnitComparison\IsDataVisualizationeUnit.cs" />
+    <Compile Include="DUInformation.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
