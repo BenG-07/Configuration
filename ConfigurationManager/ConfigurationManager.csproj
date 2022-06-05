@@ -45,7 +45,9 @@
   <ItemGroup>
     <Compile Include="ActiveDataUnit.cs" />
     <Compile Include="ConfigurationManager.cs" />
-    <Compile Include="DataUnitComparison\DataUnitTypeComparer.cs" />
+    <Compile Include="DataUnitComparison\DataUnitTypeComparer.cs">
+      <ExcludeFromStyleCop>False</ExcludeFromStyleCop>
+    </Compile>
     <Compile Include="DataUnitComparison\IsDataProcessingUnit.cs" />
     <Compile Include="DataUnitComparison\IsDataSourceUnit.cs" />
     <Compile Include="DataUnitComparison\IsDataUnit.cs" />

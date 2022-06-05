@@ -1,14 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿//-----------------------------------------------------------------------
+// <copyright file="UserIO.cs" company="FHWN">
+//     Copyright (c) FHWN. All rights reserved.
+// </copyright>
+// <author>Benjamin Weirer</author>
+// <summary>Represents all user interactions of the ConfigurationManager for data units.</summary>
+//-----------------------------------------------------------------------
 
 namespace ConfigurationManager
 {
+    using System;
+    using System.Collections.Generic;
+
+    /// <summary>
+    /// All user interactions of the ConfigurationManager for data units.
+    /// </summary>
     public static class UserIO
     {
-        public static void GetCreateDataUnitInstances(Dictionary<string, DUInformation> dUInformation, List<ActiveDataUnit> activeDataUnits, Func<string, ActiveDataUnit> createInstance)
+        /// <summary>
+        /// Asks the user from which data unit to create instances and adds the to the activeDataUnits list.
+        /// </summary>
+        /// <param name="dataUnitInformation">The data unit information.</param>
+        /// <param name="activeDataUnits">The active data units.</param>
+        /// <param name="createInstance">The function to create an instance of a data unit.</param>
+        public static void GetCreateDataUnitInstances(Dictionary<string, DUInformation> dataUnitInformation, List<ActiveDataUnit> activeDataUnits, Func<string, ActiveDataUnit> createInstance)
         {
             while (true)
             {
@@ -16,7 +30,7 @@ namespace ConfigurationManager
                 Console.WriteLine("Please enter the identifier of the dataunit you want to activate! To Start the unit enter \"Start\"");
                 Console.WriteLine("Following modules were found:\n");
 
-                foreach (var item in dUInformation)
+                foreach (var item in dataUnitInformation)
                 {
                     Console.WriteLine($"Identifier: {item.Key}");
                     Console.WriteLine(item.Value.Attribute);
@@ -29,9 +43,9 @@ namespace ConfigurationManager
                     break;
                 }
 
-                if (dUInformation.ContainsKey(input))
+                if (dataUnitInformation.ContainsKey(input))
                 {
-                    dUInformation[input].ActiveInstances++;
+                    dataUnitInformation[input].ActiveInstances++;
                     activeDataUnits.Add(createInstance(input));
                 }
             }
@@ -39,7 +53,12 @@ namespace ConfigurationManager
             Console.Clear();
         }
 
-        public static void ConnectDataUnits(Dictionary<string, DUInformation> dUInformation, List<ActiveDataUnit> activeDataUnits)
+        /// <summary>
+        /// Asks the user which instance of a data unit shall be connected with another and adds them to the corresponding <see cref="ActiveDataUnit"/> ConnectedDataUnitInstances list.
+        /// </summary>
+        /// <param name="dataUnitInformation">The data unit information.</param>
+        /// <param name="activeDataUnits">The active data units.</param>
+        public static void ConnectDataUnits(Dictionary<string, DUInformation> dataUnitInformation, List<ActiveDataUnit> activeDataUnits)
         {
             while (true)
             {
@@ -61,6 +80,7 @@ namespace ConfigurationManager
                 {
                     break;
                 }
+
                 if (!int.TryParse(input, out int source) || source >= activeDataUnits.Count)
                 {
                     continue;
@@ -72,12 +92,13 @@ namespace ConfigurationManager
                 {
                     break;
                 }
+
                 if (!int.TryParse(input, out int desination) || desination >= activeDataUnits.Count)
                 {
                     continue;
                 }
 
-                if (dUInformation[activeDataUnits[source].Name].Attribute.OutputDataType != dUInformation[activeDataUnits[desination].Name].Attribute.InputDataType)
+                if (dataUnitInformation[activeDataUnits[source].Name].Attribute.OutputDataType != dataUnitInformation[activeDataUnits[desination].Name].Attribute.InputDataType)
                 {
                     continue;
                 }
@@ -86,7 +107,13 @@ namespace ConfigurationManager
             }
         }
 
-        public static List<Action> GetStartDataUnits(Dictionary<string, DUInformation> dUInformation, List<ActiveDataUnit> activeDataUnits)
+        /// <summary>
+        /// Asks the user which DSU shall be started.
+        /// </summary>
+        /// <param name="dataUnitInformation">The data unit information.</param>
+        /// <param name="activeDataUnits">The active data units.</param>
+        /// <returns>A list of actions to start the data units.</returns>
+        public static List<Action> GetStartDataUnits(Dictionary<string, DUInformation> dataUnitInformation, List<ActiveDataUnit> activeDataUnits)
         {
             List<Action> tasks = new List<Action>();
 
@@ -106,13 +133,14 @@ namespace ConfigurationManager
                 {
                     break;
                 }
+
                 if (!int.TryParse(input, out int choice) || choice >= activeDataUnits.Count)
                 {
                     continue;
                 }
 
                 activeDataUnits[choice].State = DataUnitState.Running;
-                tasks.Add(new Action(() => { dUInformation[activeDataUnits[choice].Name].Start.Invoke(activeDataUnits[choice].Instance, new object[] { }); }));
+                tasks.Add(new Action(() => { dataUnitInformation[activeDataUnits[choice].Name].Start.Invoke(activeDataUnits[choice].Instance, new object[] { }); }));
             }
 
             Console.Clear();
@@ -120,6 +148,10 @@ namespace ConfigurationManager
             return tasks;
         }
 
+        /// <summary>
+        /// Prints the active data units with all relevant information.
+        /// </summary>
+        /// <param name="activeDataUnits">The active data units.</param>
         private static void PrintActiveDataUnits(List<ActiveDataUnit> activeDataUnits)
         {
             for (int i = 0; i < activeDataUnits.Count; i++)
