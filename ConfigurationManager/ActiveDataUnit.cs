@@ -17,12 +17,15 @@ namespace ConfigurationManager
 
         public DataUnitState State { get; set; }
 
+        public List<object> ConnectedDataUnitInstances { get; set; }
+
         public ActiveDataUnit(string name, DataUnit dataUnit, object instance, DataUnitState state)
         {
             this.Name = name;
             this.DataUnitType = dataUnit;
             this.Instance = instance;
             this.State = state;
+            this.ConnectedDataUnitInstances = new List<object>();
         }
 
         public override string ToString()

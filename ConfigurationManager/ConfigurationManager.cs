@@ -32,90 +32,9 @@ namespace ConfigurationManager
                 this.DUInformation.Add(item.Type.FullName, item);
             }
 
-            while (true)
-            {
-                Console.Clear();
-                Console.WriteLine("Please enter the identifier of the dataunit you want to activate! To Start the unit enter \"Start\"");
-                Console.WriteLine("Following modules were found:\n");
-
-                foreach (var item in DUInformation)
-                {
-                    Console.WriteLine($"Identifier: {item.Key}");
-                    Console.WriteLine(item.Value.Attribute);
-                    Console.WriteLine($"Active intances: {item.Value.ActiveInstances}\n");
-                }
-
-                string input = Console.ReadLine().Trim();
-                if (input == "Start")
-                {
-                    break;
-                }
-
-                if (DUInformation.ContainsKey(input))
-                {
-                    DUInformation[input].ActiveInstances++;
-                    this.activeDataUnits.Add(this.CreateDataUnitInstance(input));
-                }
-            }
-            Console.Clear();
-
-            while (true)
-            {
-                Console.Clear();
-                Console.Write("Enter the index of the DataUnit you want to start: ");
-                int x = Console.CursorLeft;
-                int y = Console.CursorTop;
-                Console.WriteLine();
-                for (int i = 0; i < this.activeDataUnits.Count; i++)
-                {
-                    Console.WriteLine($"index: {i}");
-                    Console.WriteLine(activeDataUnits[i]);
-                    Console.WriteLine();
-                }
-
-                Console.SetCursorPosition(x, y);
-                string input = Console.ReadLine();
-                if (!int.TryParse(input, out int choice) || choice >= this.activeDataUnits.Count)
-                {
-                    continue;
-                }
-
-                this.activeDataUnits[choice].State = DataUnitState.Running;
-                this.DUInformation[this.activeDataUnits[choice].Name].Start.Invoke(this.activeDataUnits[choice].Instance, new object[] { });
-            }
-
-
-            // Get extension
-            //var assembly = Assembly.LoadFrom($"{this.ExtensionPaths[0]}\\DSURandomGenerator.dll");
-            //var assembly2 = Assembly.LoadFrom($"{this.ExtensionPaths[1]}\\DPUAddNumbers.dll");
-
-            //// Get the class with the DataUnit Attribute and the DataSourceUnit as Type
-            //Type type = this.DUInformation["DSURandomGenerator.RandomGenerator"].Type;
-            //Type type2 = this.DUInformation["DPUAddNumbers.AddNumbers"].Type;
-
-            //// Get the DataSourceAttribute
-            //this.DUInformation["DSURandomGenerator.RandomGenerator"].DataSource = (EventInfo)this.GetDUByAttribute(type, typeof(DataSourceAttribute));
-            //this.DUInformation["DPUAddNumbers.AddNumbers"].DataSource = (EventInfo)this.GetDUByAttribute(type2, typeof(DataSourceAttribute));
-            //this.DUInformation["DPUAddNumbers.AddNumbers"].callBack = (MethodInfo)this.GetDUByAttribute(type2, typeof(DataDestinationAttribute));
-
-            //// Create instance of the DSU
-            //this.DUInformation["DSURandomGenerator.RandomGenerator"].Instance = Activator.CreateInstance(type);
-            //this.DUInformation["DPUAddNumbers.AddNumbers"].Instance = Activator.CreateInstance(type2);
-
-            //// Get the start method for the DSU
-            //this.DUInformation["DSURandomGenerator.RandomGenerator"].Start = type.GetMethod("Start");
-            //this.DUInformation["DSURandomGenerator.RandomGenerator"].Stop = type.GetMethod("Stop");
-
-            //// Get the handler
-            //Delegate handler = Delegate.CreateDelegate(this.DUInformation["DSURandomGenerator.RandomGenerator"].DataSource.EventHandlerType, this, this.GetType().GetMethod("DSUCallback"));
-            //Delegate handler2 = Delegate.CreateDelegate(this.DUInformation["DPUAddNumbers.AddNumbers"].DataSource.EventHandlerType, this, this.GetType().GetMethod("DSUCallback"));
-
-            //// Subscribe to the EmittingEvent (the handler(Callbakc)) 
-            //this.DUInformation["DSURandomGenerator.RandomGenerator"].DataSource.AddEventHandler(this.DUInformation["DSURandomGenerator.RandomGenerator"].Instance, handler);
-            //this.DUInformation["DPUAddNumbers.AddNumbers"].DataSource.AddEventHandler(this.DUInformation["DPUAddNumbers.AddNumbers"].Instance, handler2);
-
-            //// Start the DSU
-            //this.DUInformation["DSURandomGenerator.RandomGenerator"].Start.Invoke(this.DUInformation["DSURandomGenerator.RandomGenerator"].Instance, new object[] { });
+            UserIO.GetCreateDataUnitInstances(this.DUInformation, this.activeDataUnits, this.CreateDataUnitInstance);
+            UserIO.ConnectDataUnits(this.DUInformation, this.activeDataUnits);
+            UserIO.GetStartDataUnits(this.DUInformation, this.activeDataUnits).ForEach(a => a());
 
             Console.ReadLine();
         }
@@ -139,8 +58,6 @@ namespace ConfigurationManager
                 path = $"{this.ExtensionPaths[2]}\\{info.Type.Module.Name}";
             }
 
-            //var assembly = Assembly.LoadFrom(path);
-
             if (info.Attribute.OutputDataType != null)
             {
                 info.DataSource = (EventInfo)this.GetDUByAttribute(info.Type, typeof(DataSourceAttribute));
@@ -160,8 +77,11 @@ namespace ConfigurationManager
             var dataUnit = this.DUInformation[identifier];
 
             object instance = Activator.CreateInstance(dataUnit.Type);
-            Delegate handler = Delegate.CreateDelegate(dataUnit.DataSource.EventHandlerType, this, this.GetType().GetMethod("DSUCallback"));
-            dataUnit.DataSource.AddEventHandler(instance, handler);
+            if (dataUnit.DataSource != null)
+            {
+                Delegate handler = Delegate.CreateDelegate(dataUnit.DataSource.EventHandlerType, this, this.GetType().GetMethod("DSUCallback"));
+                dataUnit.DataSource.AddEventHandler(instance, handler);
+            }
 
             var state = DataUnitState.Active;
 
@@ -209,16 +129,15 @@ namespace ConfigurationManager
             }
 
             Type targetType = dUInformation.Attribute.OutputDataType;
-            var method = this.GetType().GetMethod("ProcessData", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(targetType);
-            method.Invoke(this, new object[] { e });
+            var method = this.GetType().GetMethod($"{nameof(SendData)}", BindingFlags.NonPublic | BindingFlags.Instance).MakeGenericMethod(targetType);
+            method.Invoke(this, new object[] { sender, e });
         }
 
-        private void ProcessData<T>(dynamic e)
+        private void SendData<T>(object sender, dynamic e)
         {
             NewValueAvailableEventArgs<T> args = (NewValueAvailableEventArgs<T>)e;
 
-            Console.WriteLine(args.Value);
-            //this.DUInformation["DPUAddNumbers.AddNumbers"].callBack.Invoke(this.DUInformation["DPUAddNumbers.AddNumbers"].Instance, new object[] { args.Value });
+            this.activeDataUnits.Find(u => u.Instance == sender).ConnectedDataUnitInstances.ForEach(i => this.DUInformation[this.activeDataUnits.Find(u => u.Instance == i).Name].CallBack.Invoke(i, new object[] { args.Value }));
         }
 
         private IEnumerable<DUInformation> GetAllAvailableExtensions()

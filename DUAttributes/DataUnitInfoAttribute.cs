@@ -38,7 +38,7 @@ namespace DUAttributes
                     this.DataUnit = new DataProcessingUnit();
                     break;
 
-                case DataUnitEnum.DateVisualiztaionUnit:
+                case DataUnitEnum.DataVisualiztaionUnit:
                     this.DataUnit = new DataVisualizationUnit();
                     break;
 

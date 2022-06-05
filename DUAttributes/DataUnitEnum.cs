@@ -10,6 +10,6 @@ namespace DUAttributes
     {
         DataSourceUnit,
         DataProcessingUnit,
-        DateVisualiztaionUnit
+        DataVisualiztaionUnit
     }
 }
