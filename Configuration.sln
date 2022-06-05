@@ -29,9 +29,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DUAttributes", "DUAttribute
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{4219C371-E8C5-4150-B7A2-8E12417ED3FD}"
 	ProjectSection(SolutionItems) = preProject
-		ProjectNotes.txt = ProjectNotes.txt
 		README.md = README.md
-		ToDo.txt = ToDo.txt
 	EndProjectSection
 EndProject
 Global
