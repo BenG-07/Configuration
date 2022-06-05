@@ -16,13 +16,13 @@ namespace ConfigurationManager
 
         public EventInfo DataSource { get; set; }
 
-        public MethodInfo callBack { get; set; }
-
-        public object Instance { get; set; }
+        public MethodInfo CallBack { get; set; }
 
         public MethodInfo Start { get; set; }
 
         public MethodInfo Stop { get; set; }
+
+        public int ActiveInstances { get; set; }
 
         public DUInformation(Type type, DataUnitInfoAttribute attribute)
         {
