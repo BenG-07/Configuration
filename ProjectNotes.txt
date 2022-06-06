@@ -1,2 +1,0 @@
-To minimize to amount of errors the user can make, most of the necessary parts are mandatory by Attributes. These Attributes restrict the user to fill out every needed field with the right types and therefore guarantee a smooth datacommunication between the ConfigurationManager and the dll's/exe's.
-In hindsight these Attributes might not have been the best way to restrict the user and it has some flaws.
