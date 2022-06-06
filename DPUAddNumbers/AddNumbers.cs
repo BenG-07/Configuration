@@ -42,7 +42,7 @@ namespace DPUAddNumbers
         /// <summary>
         /// The locker object to prevent multiple threads from intervening each other.
         /// </summary>
-        private object locker = new object();
+        private readonly object locker = new object();
 
         /// <summary>
         /// The delegate for the <see cref="NewValueAvailable"/> event.

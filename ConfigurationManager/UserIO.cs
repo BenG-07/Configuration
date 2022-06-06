@@ -27,7 +27,7 @@ namespace ConfigurationManager
             while (true)
             {
                 Console.Clear();
-                Console.WriteLine("Please enter the identifier of the dataunit you want to activate! To Start the unit enter \"Start\"");
+                Console.WriteLine("Please enter the identifier of the dataunit you want to activate! To start with the current set instances enter \"Start\"");
                 Console.WriteLine("Following modules were found:\n");
 
                 foreach (var item in dataUnitInformation)
@@ -63,11 +63,12 @@ namespace ConfigurationManager
             while (true)
             {
                 Console.Clear();
-                Console.Write("Enter the index of the DataUnit you want to connect: ");
+                Console.WriteLine("Enter \"Start\" to confirm the data unit connections!");
+                Console.Write("Enter the index of the DataUnit you want to use as the source: ");
                 int x = Console.CursorLeft;
                 int y = Console.CursorTop;
                 Console.WriteLine();
-                Console.Write("Enter the index of the DataUnit you want to connect to: ");
+                Console.Write("Enter the index of the DataUnit you want to connect it to: ");
                 int x2 = Console.CursorLeft;
                 int y2 = Console.CursorTop;
                 Console.WriteLine();
@@ -120,7 +121,8 @@ namespace ConfigurationManager
             while (true)
             {
                 Console.Clear();
-                Console.Write("Enter the index of the DataUnit you want to start: ");
+                Console.WriteLine("Enter \"Start\" to confirm the data unit states!");
+                Console.Write("Enter the index of the DataUnit you want to start (data source units must be set to \"running\" to function properly): ");
                 int x = Console.CursorLeft;
                 int y = Console.CursorTop;
                 Console.WriteLine();
@@ -134,7 +136,7 @@ namespace ConfigurationManager
                     break;
                 }
 
-                if (!int.TryParse(input, out int choice) || choice >= activeDataUnits.Count)
+                if (!int.TryParse(input, out int choice) || choice >= activeDataUnits.Count || activeDataUnits[choice].State == DataUnitState.Running)
                 {
                     continue;
                 }

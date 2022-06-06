@@ -65,8 +65,7 @@ namespace ConfigurationManager
         /// <param name="e">The eventArgs.</param>
         public void DSUCallback(object sender, dynamic e)
         {
-            DUInformation dataUnitInformation = null;
-            if (!this.dataUnitInformation.TryGetValue(sender.ToString(), out dataUnitInformation))
+            if (!this.dataUnitInformation.TryGetValue(sender.ToString(), out DUInformation dataUnitInformation))
             {
                 throw new Exception($"Unknown Callback from {sender.ToString()} class.");
             }
@@ -95,23 +94,6 @@ namespace ConfigurationManager
         /// <param name="info">The data unit info object to populate.</param>
         private void LoadAssembly(DUInformation info)
         {
-            string path = string.Empty;
-
-            if (info.Attribute.DataUnit.Accept(new DataUnitTypeComparer(new DataSourceUnit())))
-            {
-                path = $"{this.extensionPaths[0]}\\{info.Type.Module.Name}";
-            }
-
-            if (info.Attribute.DataUnit.Accept(new DataUnitTypeComparer(new DataProcessingUnit())))
-            {
-                path = $"{this.extensionPaths[1]}\\{info.Type.Module.Name}";
-            }
-
-            if (info.Attribute.DataUnit.Accept(new DataUnitTypeComparer(new DataVisualizationUnit())))
-            {
-                path = $"{this.extensionPaths[2]}\\{info.Type.Module.Name}";
-            }
-
             if (info.Attribute.OutputDataType != null)
             {
                 info.DataSource = (EventInfo)this.GetDUByAttribute(info.Type, typeof(DataSourceAttribute));
