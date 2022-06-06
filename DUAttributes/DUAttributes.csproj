@@ -43,6 +43,11 @@
   <ItemGroup>
     <Compile Include="DataDestinationAttribute.cs" />
     <Compile Include="DataSourceAttribute.cs" />
+    <Compile Include="DataUnitComparison\DataUnitTypeComparer.cs" />
+    <Compile Include="DataUnitComparison\IsDataProcessingUnit.cs" />
+    <Compile Include="DataUnitComparison\IsDataSourceUnit.cs" />
+    <Compile Include="DataUnitComparison\IsDataUnit.cs" />
+    <Compile Include="DataUnitComparison\IsDataVisualizationeUnit.cs" />
     <Compile Include="DataUnitEnum.cs" />
     <Compile Include="DataUnitInfoAttribute.cs" />
     <Compile Include="DataUnitType\DataProcessingUnit.cs" />
